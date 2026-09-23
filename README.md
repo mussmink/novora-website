@@ -1,6 +1,6 @@
-# Novora Construction Group — Website
+# Novora Group Acquisitions — Website
 
-Static marketing site for Novora Construction Group, hosted on GitHub Pages.
+Static marketing site for Novora Group Acquisitions, hosted on GitHub Pages.
 
 ## Structure
 
@@ -15,7 +15,7 @@ No build step — it's plain HTML/CSS/JS. Open `index.html` directly in a browse
 
 ## Still to do before this goes live
 
-1. **Add the real logo.** Drop the logo file into `assets/` and swap it into the `.wordmark` link in `index.html` (currently text-only) and into `assets/favicon.svg` (currently a placeholder "N" mark).
+1. ~~Add the real logo.~~ Done — `assets/logo.png` (circle-cropped, transparent background) plus derived `favicon-32.png` and `apple-touch-icon.png`.
 2. **Get a Web3Forms access key** (handles the "Start Your Project" inquiry form — no backend needed):
    - Go to https://web3forms.com/, enter the email address inquiries should be sent to, and it will email you a free access key.
    - In `index.html`, find the line:
@@ -44,7 +44,7 @@ Once you have the exact domain name and know which registrar it's with (GoDaddy,
 
 1. In the repo's GitHub settings → **Pages**, add the custom domain under "Custom domain." GitHub will create/verify a `CNAME` file in this repo automatically (or add one manually containing just the domain, e.g. `novoraconstructiongroup.com`).
 2. At the domain registrar's DNS settings, add:
-   - For the root/apex domain (`novoraconstructiongroup.com`): four **A records** pointing to GitHub Pages' IPs:
+   - For the root/apex domain (e.g. `yourdomain.com`): four **A records** pointing to GitHub Pages' IPs:
      ```
      185.199.108.153
      185.199.109.153
@@ -56,5 +56,5 @@ Once you have the exact domain name and know which registrar it's with (GoDaddy,
 
 ## Notes
 
-- This was built as a sales mockup first, then converted into a real static site — see the earlier Novora Construction Group artifact link in this conversation for the original visual pass.
+- This was built as a sales mockup first, then converted into a real static site — see the earlier Novora Group Acquisitions artifact link in this conversation for the original visual pass.
 - File uploads on the inquiry form (`Photos` field) require a paid Web3Forms plan to actually deliver attachments; on the free plan the field is present but attachments won't come through. Fine to leave as-is or remove later.
