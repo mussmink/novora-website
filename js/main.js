@@ -1,4 +1,13 @@
 (function () {
+  var motionOk = !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var root = document.documentElement;
+  root.classList.add('js-ready');
+  if (motionOk) root.classList.add('motion-ok');
+
+  var header = document.querySelector('header');
+  var HEADER_OFFSET = 76;
+
+  /* ---------- mobile nav toggle ---------- */
   var toggle = document.getElementById('menuToggle');
   var links = document.getElementById('navLinks');
   if (toggle && links) {
@@ -13,6 +22,121 @@
     });
   }
 
+  /* ---------- smooth anchor scrolling with header-offset compensation ---------- */
+  document.querySelectorAll('a[href^="#"]').forEach(function (a) {
+    a.addEventListener('click', function (e) {
+      var hash = a.getAttribute('href');
+      if (!hash || hash.length < 2) return;
+      var target = document.querySelector(hash);
+      if (!target) return;
+      e.preventDefault();
+      var top = target.getBoundingClientRect().top + window.pageYOffset - HEADER_OFFSET + 1;
+      window.scrollTo({ top: top, behavior: motionOk ? 'smooth' : 'auto' });
+      if (history.pushState) history.pushState(null, '', hash);
+    });
+  });
+
+  /* ---------- header shadow on scroll ---------- */
+  var lastScrolled = false;
+  function onScrollHeader() {
+    var scrolled = window.scrollY > 8;
+    if (scrolled !== lastScrolled) {
+      header.classList.toggle('scrolled', scrolled);
+      lastScrolled = scrolled;
+    }
+  }
+  onScrollHeader();
+  window.addEventListener('scroll', onScrollHeader, { passive: true });
+
+  /* ---------- subtle hero grid parallax ---------- */
+  var heroGrid = document.querySelector('.hero-grid');
+  if (heroGrid && motionOk) {
+    var ticking = false;
+    window.addEventListener('scroll', function () {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(function () {
+        var y = Math.min(window.scrollY, 600) * 0.12;
+        heroGrid.style.transform = 'translateY(' + y + 'px)';
+        ticking = false;
+      });
+    }, { passive: true });
+  }
+
+  /* ---------- blueprint "draw-in" stroke animation ---------- */
+  function drawIn(svg) {
+    if (!svg || svg.dataset.drawn) return;
+    svg.dataset.drawn = 'true';
+    var shapes = svg.querySelectorAll('rect, line, polygon, circle');
+    shapes.forEach(function (shape, i) {
+      if (shape.hasAttribute('stroke-dasharray')) return; // preserve intentional dashed guide lines
+      try {
+        var len = shape.getTotalLength();
+        if (!len) return;
+        shape.style.strokeDasharray = len;
+        shape.style.strokeDashoffset = len;
+        setTimeout(function () {
+          shape.style.strokeDashoffset = 0;
+        }, 40 + i * 70);
+      } catch (err) {
+        /* getTotalLength unsupported on this shape — leave it static */
+      }
+    });
+  }
+
+  if (motionOk) {
+    var heroSvg = document.querySelector('.elevation svg.draw-in');
+    window.addEventListener('load', function () {
+      setTimeout(function () { drawIn(heroSvg); }, 250);
+    });
+  }
+
+  /* ---------- scroll reveal + staggering + development draw-ins ---------- */
+  var revealEls = document.querySelectorAll('.reveal, .stamp-in');
+  if (motionOk && 'IntersectionObserver' in window) {
+    revealEls.forEach(function (el) {
+      var group = el.parentElement;
+      var i = group ? Array.prototype.indexOf.call(group.children, el) : 0;
+      el.style.setProperty('--i', i);
+    });
+
+    var revealObserver = new IntersectionObserver(function (entries, obs) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add('is-visible');
+        var innerSvg = entry.target.querySelector && entry.target.querySelector('svg.draw-in');
+        if (innerSvg) drawIn(innerSvg);
+        obs.unobserve(entry.target);
+      });
+    }, { threshold: 0.15, rootMargin: '0px 0px -8% 0px' });
+
+    revealEls.forEach(function (el) { revealObserver.observe(el); });
+  } else {
+    revealEls.forEach(function (el) { el.classList.add('is-visible'); });
+  }
+
+  /* ---------- active nav link tracking ---------- */
+  var navLinks = document.querySelectorAll('.nav-links a[href^="#"]');
+  var sections = Array.prototype.map.call(navLinks, function (a) {
+    return document.querySelector(a.getAttribute('href'));
+  }).filter(Boolean);
+
+  if ('IntersectionObserver' in window && sections.length) {
+    var navObserver = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        var link = document.querySelector('.nav-links a[href="#' + entry.target.id + '"]');
+        if (!link) return;
+        if (entry.isIntersecting) {
+          navLinks.forEach(function (l) { l.classList.remove('active'); });
+          link.classList.add('active');
+        }
+      });
+    }, { rootMargin: '-40% 0px -55% 0px', threshold: 0 });
+
+    sections.forEach(function (s) { navObserver.observe(s); });
+  }
+
+  /* ---------- inquiry form submission (Web3Forms) ---------- */
   var form = document.getElementById('inquiry-form');
   var status = document.getElementById('form-status');
   if (form && status) {
