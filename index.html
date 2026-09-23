@@ -72,6 +72,8 @@
           <line x1="360" y1="294" x2="360" y2="306" stroke="currentColor" stroke-width="1"/>
           <text x="210" y="320" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="11" fill="currentColor">28'-0" TYP. FRONTAGE</text>
         </svg>
+        <canvas class="house3d" id="house3d" aria-hidden="true"></canvas>
+        <span class="drag-hint">Drag to rotate</span>
       </div>
     </div>
 
@@ -121,14 +123,38 @@
       </div>
 
       <div class="schedule">
-        <div class="schedule-row reveal"><span class="mark">01</span><span class="service">Ground-Up Construction</span><span class="desc">We build every phase of a residential project ourselves, from early planning through completion.</span></div>
-        <div class="schedule-row reveal"><span class="mark">02</span><span class="service">Real Estate Development</span><span class="desc">Luxury single-family homes and high-end townhome developments, built by Novora under the Novora name.</span></div>
-        <div class="schedule-row reveal"><span class="mark">03</span><span class="service">Whole-Home Renovation</span><span class="desc">Multi-room, multi-trade renovations spanning kitchens, baths, flooring, electrical, and plumbing.</span></div>
-        <div class="schedule-row reveal"><span class="mark">04</span><span class="service">Kitchen Remodeling</span><span class="desc">Cabinetry, countertops, backsplashes, lighting, and plumbing or electrical upgrades.</span></div>
-        <div class="schedule-row reveal"><span class="mark">05</span><span class="service">Bathroom Remodeling</span><span class="desc">Tubs, showers, tile, vanities, and fixtures — from targeted upgrades to full gut renovations.</span></div>
-        <div class="schedule-row reveal"><span class="mark">06</span><span class="service">Flooring</span><span class="desc">Luxury vinyl plank, laminate, and tile installation for individual rooms or full properties.</span></div>
-        <div class="schedule-row reveal"><span class="mark">07</span><span class="service">Painting &amp; Drywall</span><span class="desc">Interior painting, drywall installation, repair, patching, and finishing.</span></div>
-        <div class="schedule-row reveal"><span class="mark">08</span><span class="service">Investment &amp; Rental Renovation</span><span class="desc">Value-focused upgrades for landlords and investors, priced against real return.</span></div>
+        <div class="schedule-row reveal">
+          <button class="schedule-toggle" aria-expanded="false"><span class="mark">01</span><span class="service">Ground-Up Construction</span><span class="chev" aria-hidden="true">+</span></button>
+          <div class="schedule-desc"><p>We build every phase of a residential project ourselves, from early planning through completion.</p></div>
+        </div>
+        <div class="schedule-row reveal">
+          <button class="schedule-toggle" aria-expanded="false"><span class="mark">02</span><span class="service">Real Estate Development</span><span class="chev" aria-hidden="true">+</span></button>
+          <div class="schedule-desc"><p>Luxury single-family homes and high-end townhome developments, built by Novora under the Novora name.</p></div>
+        </div>
+        <div class="schedule-row reveal">
+          <button class="schedule-toggle" aria-expanded="false"><span class="mark">03</span><span class="service">Whole-Home Renovation</span><span class="chev" aria-hidden="true">+</span></button>
+          <div class="schedule-desc"><p>Multi-room, multi-trade renovations spanning kitchens, baths, flooring, electrical, and plumbing.</p></div>
+        </div>
+        <div class="schedule-row reveal">
+          <button class="schedule-toggle" aria-expanded="false"><span class="mark">04</span><span class="service">Kitchen Remodeling</span><span class="chev" aria-hidden="true">+</span></button>
+          <div class="schedule-desc"><p>Cabinetry, countertops, backsplashes, lighting, and plumbing or electrical upgrades.</p></div>
+        </div>
+        <div class="schedule-row reveal">
+          <button class="schedule-toggle" aria-expanded="false"><span class="mark">05</span><span class="service">Bathroom Remodeling</span><span class="chev" aria-hidden="true">+</span></button>
+          <div class="schedule-desc"><p>Tubs, showers, tile, vanities, and fixtures — from targeted upgrades to full gut renovations.</p></div>
+        </div>
+        <div class="schedule-row reveal">
+          <button class="schedule-toggle" aria-expanded="false"><span class="mark">06</span><span class="service">Flooring</span><span class="chev" aria-hidden="true">+</span></button>
+          <div class="schedule-desc"><p>Luxury vinyl plank, laminate, and tile installation for individual rooms or full properties.</p></div>
+        </div>
+        <div class="schedule-row reveal">
+          <button class="schedule-toggle" aria-expanded="false"><span class="mark">07</span><span class="service">Painting &amp; Drywall</span><span class="chev" aria-hidden="true">+</span></button>
+          <div class="schedule-desc"><p>Interior painting, drywall installation, repair, patching, and finishing.</p></div>
+        </div>
+        <div class="schedule-row reveal">
+          <button class="schedule-toggle" aria-expanded="false"><span class="mark">08</span><span class="service">Investment &amp; Rental Renovation</span><span class="chev" aria-hidden="true">+</span></button>
+          <div class="schedule-desc"><p>Value-focused upgrades for landlords and investors, priced against real return.</p></div>
+        </div>
       </div>
     </div>
   </section>
@@ -175,18 +201,21 @@
           <span class="num">Development 01 · In Planning</span>
           <svg class="siteplan draw-in" viewBox="0 0 160 120"><rect x="10" y="16" width="60" height="46" fill="none" stroke="currentColor"/><rect x="90" y="16" width="60" height="46" fill="none" stroke="currentColor"/><rect x="10" y="76" width="140" height="30" fill="none" stroke="currentColor" class="hl"/><line x1="10" y1="10" x2="150" y2="10" stroke="currentColor" stroke-dasharray="2 3"/></svg>
           <h3>Luxury Single-Family Homes</h3>
+          <button class="dev-toggle" aria-expanded="false">+ Details</button>
           <div class="meta"><span>Type: Detached, single-family</span><span>Market: Pennsylvania suburbs</span><span>Status: Site &amp; plans in development</span></div>
         </div>
         <div class="dev-card reveal">
           <span class="num">Development 02 · In Planning</span>
           <svg class="siteplan draw-in" viewBox="0 0 160 120"><rect x="14" y="14" width="30" height="90" fill="none" stroke="currentColor"/><rect x="52" y="14" width="30" height="90" fill="none" stroke="currentColor" class="hl"/><rect x="90" y="14" width="30" height="90" fill="none" stroke="currentColor"/><rect x="128" y="14" width="18" height="90" fill="none" stroke="currentColor"/></svg>
           <h3>High-End Townhomes</h3>
+          <button class="dev-toggle" aria-expanded="false">+ Details</button>
           <div class="meta"><span>Type: Attached, multi-unit</span><span>Market: Philadelphia suburbs</span><span>Status: Site &amp; plans in development</span></div>
         </div>
         <div class="dev-card reveal">
           <span class="num">Development 03 · In Planning</span>
           <svg class="siteplan draw-in" viewBox="0 0 160 120"><polygon points="80,10 150,55 80,110 10,55" fill="none" stroke="currentColor" class="hl"/><line x1="80" y1="10" x2="80" y2="110" stroke="currentColor" stroke-dasharray="2 3"/></svg>
           <h3>Luxury Single-Family Homes</h3>
+          <button class="dev-toggle" aria-expanded="false">+ Details</button>
           <div class="meta"><span>Type: Detached, single-family</span><span>Market: Pennsylvania suburbs</span><span>Status: Site &amp; plans in development</span></div>
         </div>
       </div>
@@ -307,6 +336,7 @@
 </footer>
 
 <script src="https://web3forms.com/client/script.js" async defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="js/main.js"></script>
 </body>
 </html>

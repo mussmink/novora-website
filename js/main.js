@@ -91,6 +91,128 @@
     });
   }
 
+  /* ---------- interactive 3D house (hero) ---------- */
+  (function initHouse3D() {
+    var canvas = document.getElementById('house3d');
+    var elevation = document.querySelector('.elevation');
+    if (!canvas || !elevation || typeof THREE === 'undefined') return;
+
+    var renderer;
+    try {
+      renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
+    } catch (err) {
+      return; // no WebGL support — the 2D blueprint SVG stays visible
+    }
+
+    var styles = getComputedStyle(document.documentElement);
+    var inkColor = styles.getPropertyValue('--ink-soft').trim() || '#888888';
+    var accentColor = styles.getPropertyValue('--accent').trim() || '#c6551e';
+
+    var scene = new THREE.Scene();
+    var camera = new THREE.PerspectiveCamera(34, 1, 0.1, 100);
+    camera.position.set(4.5, 2.6, 7);
+    camera.lookAt(0, 0, 0);
+
+    // house silhouette (base + gable roof), extruded into a simple volume
+    var shape = new THREE.Shape();
+    shape.moveTo(-3, 0);
+    shape.lineTo(3, 0);
+    shape.lineTo(3, 2.6);
+    shape.lineTo(0, 4.4);
+    shape.lineTo(-3, 2.6);
+
+    var depth = 4.5;
+    var geometry = new THREE.ExtrudeGeometry(shape, { depth: depth, bevelEnabled: false });
+    geometry.center();
+
+    var houseGroup = new THREE.Group();
+
+    houseGroup.add(new THREE.Mesh(
+      geometry,
+      new THREE.MeshBasicMaterial({ color: accentColor, transparent: true, opacity: 0.05, side: THREE.DoubleSide })
+    ));
+
+    var wireframe = new THREE.LineSegments(
+      new THREE.EdgesGeometry(geometry, 1),
+      new THREE.LineBasicMaterial({ color: inkColor })
+    );
+    houseGroup.add(wireframe);
+
+    // door + window line overlays on the near gable face
+    var faceZ = depth / 2 + 0.04;
+    var door = new THREE.LineSegments(
+      new THREE.EdgesGeometry(new THREE.BoxGeometry(0.9, 1.7, 0.02)),
+      new THREE.LineBasicMaterial({ color: accentColor })
+    );
+    door.position.set(0, -0.35, faceZ);
+    houseGroup.add(door);
+
+    [-1.7, 1.7].forEach(function (x) {
+      var win = new THREE.LineSegments(
+        new THREE.EdgesGeometry(new THREE.BoxGeometry(0.8, 0.8, 0.02)),
+        new THREE.LineBasicMaterial({ color: inkColor })
+      );
+      win.position.set(x, 0.1, faceZ);
+      houseGroup.add(win);
+    });
+
+    scene.add(houseGroup);
+
+    var grid = new THREE.GridHelper(14, 14, inkColor, inkColor);
+    grid.position.y = -2.2;
+    grid.material.transparent = true;
+    grid.material.opacity = 0.18;
+    scene.add(grid);
+
+    function resize() {
+      var w = elevation.clientWidth;
+      var h = elevation.clientHeight;
+      if (!w || !h) return;
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+      renderer.setSize(w, h, false);
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    var dragging = false, lastX = 0;
+    canvas.addEventListener('pointerdown', function (e) {
+      dragging = true;
+      lastX = e.clientX;
+      canvas.setPointerCapture(e.pointerId);
+    });
+    canvas.addEventListener('pointermove', function (e) {
+      if (!dragging) return;
+      houseGroup.rotation.y += (e.clientX - lastX) * 0.01;
+      lastX = e.clientX;
+    });
+    ['pointerup', 'pointercancel', 'pointerleave'].forEach(function (evt) {
+      canvas.addEventListener(evt, function () { dragging = false; });
+    });
+
+    var inView = true;
+    if ('IntersectionObserver' in window) {
+      var heroSection = document.querySelector('.hero');
+      if (heroSection) {
+        new IntersectionObserver(function (entries) {
+          inView = entries[0].isIntersecting;
+        }, { threshold: 0.05 }).observe(heroSection);
+      }
+    }
+
+    function animate() {
+      requestAnimationFrame(animate);
+      if (!inView) return;
+      if (!dragging && motionOk) houseGroup.rotation.y += 0.0025;
+      renderer.render(scene, camera);
+    }
+    animate();
+
+    canvas.classList.add('active');
+    elevation.classList.add('has-3d');
+  })();
+
   /* ---------- scroll reveal + staggering + development draw-ins ---------- */
   var revealEls = document.querySelectorAll('.reveal, .stamp-in');
   if (motionOk && 'IntersectionObserver' in window) {
@@ -114,6 +236,25 @@
   } else {
     revealEls.forEach(function (el) { el.classList.add('is-visible'); });
   }
+
+  /* ---------- scope-of-work accordion ---------- */
+  document.querySelectorAll('.schedule-toggle').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var row = btn.closest('.schedule-row');
+      var open = row.classList.toggle('open');
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+  });
+
+  /* ---------- development card details toggle ---------- */
+  document.querySelectorAll('.dev-toggle').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var card = btn.closest('.dev-card');
+      var open = card.classList.toggle('open');
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      btn.textContent = (open ? '− ' : '+ ') + 'Details';
+    });
+  });
 
   /* ---------- active nav link tracking ---------- */
   var navLinks = document.querySelectorAll('.nav-links a[href^="#"]');

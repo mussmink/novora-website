@@ -238,10 +238,31 @@ header.scrolled{
   text-transform:uppercase;
 }
 
-.elevation{position:relative;}
+.elevation{position:relative;aspect-ratio:420/340;}
 .elevation svg{width:100%;height:auto;color:var(--ink-soft);}
 .elevation .accent-part{color:var(--accent);}
 .compass{position:absolute;top:6px;right:6px;width:46px;height:46px;color:var(--ink-soft);}
+
+.house3d{
+  display:none;
+  position:absolute;inset:0;
+  width:100%;height:100%;
+  cursor:grab;
+  touch-action:none;
+}
+.house3d.active{display:block;}
+.elevation.has-3d svg.draw-in{display:none;}
+.house3d:active{cursor:grabbing;}
+.drag-hint{
+  display:none;
+  position:absolute;bottom:8px;left:8px;
+  font-family:var(--font-mono);font-size:.66rem;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--ink-soft);
+  background:color-mix(in srgb, var(--bg) 70%, transparent);
+  padding:.3em .6em;
+  pointer-events:none;
+}
+.house3d.active ~ .drag-hint{display:block;}
 
 /* ---------- blueprint draw-in (JS sets stroke-dasharray/offset inline; this just animates it) ---------- */
 .js-ready.motion-ok .draw-in rect,
@@ -281,21 +302,43 @@ section{position:relative;padding-block:clamp(52px,8vw,96px);border-bottom:1px s
 
 /* ---------- scope of work schedule ---------- */
 .schedule{border-top:1px solid var(--line);}
-.schedule-row{
+.schedule-row{border-bottom:1px solid var(--line);}
+.schedule-toggle{
   display:grid;
-  grid-template-columns:64px 1fr 2fr;
+  grid-template-columns:64px 1fr 24px;
   gap:24px;
+  width:100%;
   padding-block:20px;
   padding-inline:12px;
   margin-inline:-12px;
-  border-bottom:1px solid var(--line);
   align-items:baseline;
-  transition:background .2s ease, padding-left .2s ease;
+  background:none;border:none;
+  font:inherit;text-align:left;cursor:pointer;
+  color:var(--ink);
+  transition:background .2s ease;
 }
-.schedule-row:hover{background:color-mix(in srgb, var(--surface) 60%, var(--accent) 6%);}
-.schedule-row:hover .mark{color:var(--ink);}
-@media (max-width:720px){.schedule-row{grid-template-columns:40px 1fr;}
-  .schedule-row .desc{grid-column:1 / -1;padding-left:64px;}
+.schedule-toggle:hover{background:color-mix(in srgb, var(--surface) 60%, var(--accent) 6%);}
+.schedule-toggle:hover .mark{color:var(--ink);}
+.schedule-toggle .chev{
+  font-family:var(--font-mono);color:var(--accent);
+  transition:transform .25s ease;
+  justify-self:end;
+}
+.schedule-row.open .chev{transform:rotate(45deg);}
+.schedule-desc{
+  padding:0 12px 0 calc(64px + 24px + 12px);
+  max-height:400px;
+  opacity:1;
+}
+.js-ready .schedule-desc{
+  max-height:0;overflow:hidden;opacity:0;
+  transition:max-height .35s ease, opacity .25s ease;
+}
+.js-ready .schedule-row.open .schedule-desc{max-height:200px;opacity:1;padding-bottom:18px;}
+.schedule-desc p{margin:0;color:var(--ink-soft);font-size:.94rem;}
+@media (max-width:720px){
+  .schedule-toggle{grid-template-columns:40px 1fr 20px;}
+  .schedule-desc{padding-left:40px;}
 }
 .schedule-row .mark{
   font-family:var(--font-mono);
@@ -310,7 +353,6 @@ section{position:relative;padding-block:clamp(52px,8vw,96px);border-bottom:1px s
   letter-spacing:.01em;
   text-transform:uppercase;
 }
-.schedule-row .desc{color:var(--ink-soft);font-size:.94rem;}
 
 /* ---------- ownership / pricing ---------- */
 .ownership-grid{
@@ -383,6 +425,21 @@ section{position:relative;padding-block:clamp(52px,8vw,96px);border-bottom:1px s
 .dev-card .siteplan .hl{color:var(--plate-accent);}
 .dev-card .meta{font-family:var(--font-mono);font-size:.76rem;color:var(--plate-ink-soft);display:grid;gap:.35em;}
 .dev-card .meta span{color:var(--plate-ink);}
+.dev-toggle{
+  align-self:flex-start;
+  background:none;border:1px solid var(--plate-line);
+  color:var(--plate-accent);
+  font-family:var(--font-mono);font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;
+  padding:.5em .9em;
+  cursor:pointer;
+  transition:border-color .2s ease, background .2s ease;
+}
+.dev-toggle:hover{border-color:var(--plate-accent);background:color-mix(in srgb, var(--plate-surface) 70%, var(--plate-accent) 10%);}
+.js-ready .dev-card .meta{
+  max-height:0;overflow:hidden;opacity:0;
+  transition:max-height .3s ease, opacity .25s ease;
+}
+.js-ready .dev-card.open .meta{max-height:200px;opacity:1;margin-top:2px;}
 .dev-foot{margin-top:clamp(28px,4vw,40px);display:flex;flex-wrap:wrap;align-items:center;gap:18px;justify-content:space-between;}
 .dev-foot p{color:var(--plate-ink-soft);font-size:.9rem;max-width:46ch;margin:0;}
 
