@@ -1,6 +1,6 @@
-# Novora Group Acquisitions — Website
+# Novora Construction Group — Website
 
-Static marketing site for Novora Group Acquisitions, hosted on GitHub Pages.
+Static marketing site for Novora Construction Group, hosted on GitHub Pages.
 
 ## Structure
 
@@ -79,5 +79,5 @@ two existing rows:
 
 ## Notes
 
-- This was built as a sales mockup first, then converted into a real static site — see the earlier Novora Group Acquisitions artifact link in this conversation for the original visual pass.
+- This was built as a sales mockup first, then converted into a real static site — see the earlier Novora Construction Group artifact link in this conversation for the original visual pass.
 - File uploads on the inquiry form (`Photos` field) require a paid Web3Forms plan to actually deliver attachments; on the free plan the field is present but attachments won't come through. Fine to leave as-is or remove later.
