@@ -43,30 +43,34 @@ GitHub Pages picks up the new commit automatically within a minute or two.
 Domain: **novoragroupacq.com**, registered via Squarespace Domains. GitHub's side is already
 done — the custom domain is set on Pages and the `CNAME` file exists in this repo.
 
-**Important:** this domain already has active Google Workspace email on it (MX + SPF records
-for `smtp.google.com`). Do **not** touch or delete the MX or TXT records when editing DNS below
-— only add/replace the records listed here, or email breaks.
+**Important:** this domain already has active Google Workspace email on it (an `MX` record for
+`smtp.google.com`, an SPF `TXT` record, and a `google._domainkey` `TXT`/DKIM record). Do **not**
+touch or delete any of those three when editing DNS below, or email breaks.
 
-The domain currently also has two existing A records pointing at an old, broken app (returns
-"402 Payment Required"), and a `www` CNAME pointing at `base44.onrender.com`. Both get replaced
-by the steps below.
+Squarespace's DNS Settings → Custom Records table for this domain shows (as of 2026-09-23):
 
-Steps, in Squarespace's DNS settings for this domain (Domains → novoragroupacq.com → DNS
-Settings → Custom Records):
+| Type  | Name              | Data                    |
+|-------|-------------------|-------------------------|
+| CNAME | www               | base44.onrender.com     |
+| TXT   | @                 | v=spf1 include:_spf.google.com ~all |
+| MX    | @                 | smtp.google.com         |
+| ALIAS | @                 | base44.onrender.com     |
+| TXT   | google._domainkey | v=DKIM1; k=rsa; p=...   |
 
-1. **Delete** the two existing A records pointing at `216.24.57.18` and `216.24.57.16`.
-2. **Add four A records**, host `@`, each pointing to one of GitHub Pages' IPs:
-   ```
-   185.199.108.153
-   185.199.109.153
-   185.199.110.153
-   185.199.111.153
-   ```
-3. **Edit (or delete + re-add) the `www` CNAME record** so it points to:
+Squarespace uses an **ALIAS** record at the apex (`@`) instead of raw A records — this does the
+same job as GitHub Pages' four A records, so there's no need to add/delete anything, just edit
+two existing rows:
+
+1. **Edit the `ALIAS` row** (`@`, currently `base44.onrender.com`) → change its Data to:
    ```
    mussmink.github.io
    ```
-   (currently points to `base44.onrender.com` — remove that one)
+2. **Edit the `CNAME` row** (`www`, currently `base44.onrender.com`) → change its Data to:
+   ```
+   mussmink.github.io
+   ```
+3. **Leave the `TXT` (SPF), `MX`, and `TXT` (DKIM) rows untouched** — that's the working
+   `@novoragroupacq.com` email.
 4. Leave the MX record (`smtp.google.com`) and the TXT/SPF record (`v=spf1 include:_spf.google.com ~all`) exactly as they are.
 5. DNS changes can take anywhere from a few minutes to a few hours to propagate.
 6. Once `https://novoragroupacq.com` loads the site, go to the repo's GitHub settings → **Pages**
